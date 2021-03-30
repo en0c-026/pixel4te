@@ -135,7 +135,9 @@
     <script  src="assets/mainmin.js"></script>
 
     <script>
+
     document.addEventListener("DOMContentLoaded", function () {
+
       window.addEventListener("arweaveWalletLoaded", () => {
           // ArConnect Wallet Functions
           var connect = window.arweaveWallet.connect
@@ -156,10 +158,20 @@
             var result = await permissions()
             return result
           }
+          var getBalance = async () => {
+
+            var adress1 = await window.arweaveWallet.getActiveAddress();
+            var balance = await arweave.wallets.getBalance(adress1);
+            var balanceInAr = arweave.ar.winstonToAr(balance);
+            return balanceInAr
+          }
+
 
           buttonconnect.addEventListener('click', async () => {
 
             var result = await handlePermissions()
+            var balance = await getBalance()
+            console.log(balance);
             if (result.length > 0) {
               buttonconnect.innerText = 'CONNECTED'
               buttondisconnect.removeAttribute('style')

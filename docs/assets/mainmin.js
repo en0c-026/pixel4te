@@ -924,15 +924,11 @@ var paletteList = [
 var currentPalette = 0;
 var maxPalette = paletteList.length;
 
+
 document.addEventListener("DOMContentLoaded", function () {
 
 
   document.getElementById("pixlInput").onchange = async function (e) {
-    let adress1 = await window.arweaveWallet.getActiveAddress()
-    let balance = await arweave.wallets.getBalance(adress1)
-    let balanceInAr = arweave.ar.winstonToAr(balance);
-    console.log(balanceInAr);
-
 
     var img = new Image();
     img.src = await URL.createObjectURL(this.files[0]);
@@ -942,15 +938,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-
-    if (balanceInAr < 0.02) {
-      document.querySelector('#downloadimage').disabled = true;
-      document.getElementById('balancefalse').innerText = `Insufficient Balance | ${balanceInAr}`
-    } else {
-      document.querySelector('#downloadimage').disabled = false;
-      document.getElementById('balancefalse').innerText = `Balance | ${balanceInAr}`
-    }
-
+    // if (balanceInAr < 0.02) {
+    //   document.querySelector('#downloadimage').disabled = true;
+    //   document.getElementById('balancefalse').innerText = `Insufficient Balance | ${balanceInAr}`
+    // } else {
+    //   document.querySelector('#downloadimage').disabled = false;
+    //   document.getElementById('balancefalse').innerText = `Balance | ${balanceInAr}`
+    // }
+    //
 
 
   };
