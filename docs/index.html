@@ -119,24 +119,22 @@
       </div>
     <img src="" id="pixelitimg" alt="">
 
-    <script>
-
-      const arweave = Arweave.init();
-      const status = document.getElementById("network-status");
-      const pdata = document.getElementById("ardata");
-
-      arweave.network.getInfo()
-        .then(result => {
-        status.innerText = `${result.network} | height:${result.height} | peers: ${result.peers} | version: ${result.version}.${result.release}`;})
-        .catch(error => pdata.style.display = 'none');
-
-    </script>
     <script  src="assets/pixelit.js"></script>
     <script  src="assets/mainmin.js"></script>
 
     <script>
 
     document.addEventListener("DOMContentLoaded", function () {
+      // Arweave init
+        const arweave = Arweave.init();
+        const status = document.getElementById("network-status");
+        const pdata = document.getElementById("ardata");
+
+        arweave.network.getInfo()
+        .then(result => {
+          status.innerText = `${result.network} | height:${result.height} | peers: ${result.peers} | version: ${result.version}.${result.release}`;})
+          .catch(error => pdata.style.display = 'none');
+      //
 
       window.addEventListener("arweaveWalletLoaded", () => {
           // ArConnect Wallet Functions
@@ -170,16 +168,17 @@
           buttonconnect.addEventListener('click', async () => {
 
             var result = await handlePermissions()
-            var balance = await getBalance()
-            console.log(balance);
+
+
             if (result.length > 0) {
+              var balance = await getBalance()
               buttonconnect.innerText = 'CONNECTED'
               buttondisconnect.removeAttribute('style')
               buttonconnect.disabled = true
               buttonconnect.style.backgroundColor = 'green'
               workingpanel.hidden = false
               startbtn.removeAttribute('style')
-
+              console.log(balance);
 
               walletdir = await address()
               greeting.innerText = `Hi... ${walletdir} .... pixel4te!`
