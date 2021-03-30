@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+     <meta charset="UTF-8">
+
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+     <link rel="stylesheet" href="assets/style.css">
+     <script src="https://unpkg.com/arweave/bundles/web.bundle.js"></script>
+     <title>pixel4te - pixel art generator</title>
+    </head>
+  <body>
+    <header>
+     <h1>pixel4te</h1>
+     <p>create pixel art from an image.</p>
+     <div class="actions">
+       <button type="button" class="btn" id="connect">CONNECT WALLET</button>
+       <button type="button" class="btn" style="display: none;" id="disconnect">DISCONNECT</button>
+     </div>
+     <div class="">
+       <p id="greeting" style="text-shadow: 0.19em 0.19em 0.05em black; font-size: 0.6em; background-color: #101820;"></p>
+     </div>
+     <div class="actions">
+       <a href="#work" class="btn" style="display: none; " id="startbtn">START NOW</a>
+     </div>
+    </header>
+    <section class="example" id="examples">
+     <div class="wrap">
+        <p>pixel4te allows you to load an image and convert it into pixel art. You can define the size of the "pixel", create a pixel image using color palettes and also grayscale.</p>
+
+        <h2>Default usage</h2>
+        <p>Blocksize of 14 and no other modification</p>
+        <div class="imgbox">
+          <img src="assets/origin1.png" alt="image origin" style="float: left;">
+          <img src="assets/only14px.png" alt="image pixelated block 14">
+        </div>
+
+        <h2>Color palette</h2>
+        <p>Blocksize of 12 and a 8 Color palette</p>
+        <div class="imgbox">
+          <img src="assets/origin4.png" alt="image pixelated block 4" style="float: left;">
+          <img src="assets/12px8c.png" alt="image image pixelated blcok 7">
+        </div>
+
+        <h2>Color palette</h2>
+        <p>Blocksize of 20 and 6 Colors</p>
+        <div class="imgbox">
+          <img src="assets/origin6.png" alt="image origin" style="float: left;">
+          <img src="assets/20px6c.png" alt="image pixelated blcok 7">
+        </div>
+
+        <h2>Color palette</h2>
+        <p>Blocksize of 7 and 6 Color pallete</p>
+        <div class="imgbox">
+          <img src="assets/origin2.png" alt="image pixelated block 4" style="float: left;">
+          <img src="assets/7px4color.png" alt="image image pixelated blcok 7">
+        </div>
+
+      </div>
+    </section>
+    <section class="working" id="work">
+      <div class="wrap">
+        <h2 class="logo">pixel4te now</h2>
+          <p style="margin-top: 0px;">Upload your image, adjust the values to your liking and then download your pixel art work!</p>
+          <!-- max width -->
+        <div class="container maxwidth" id="tryit" hidden>
+          <div class="selectors">
+            <!--upload image -->
+            <label for="pixlInput" class="btn small" id="uploadimage">Upload Image<input type="file" id="pixlInput" class="filebutton" ></label>
+            <!-- block size -->
+            <label for="blocksize" class="inputbtn">Block size<span id="blockvalue">7</span><input value="7" type="range" min="1" max="25" id="blocksize"></label>
+            <!-- greyscale -->
+            <label for="greyscale" class="inputbtn" >Greyscale<input type="checkbox" id="greyscale"></label>
+            <!-- palette -->
+            <label for="palette" class="inputbtn">palette<input type="checkbox" id="palette" checked></label>
+            <!-- max height -->
+            <label for="maxheight" class="inputbtn">Max Height<input type="input"  id="maxheight" placeholder="in px" value="384"></label>
+            <!-- max width -->
+            <label for="maxwidth" class="inputbtn">Max Width<input type="input" id="maxwidth" placeholder="in px" ></label>
+
+          </div>
+          <div class="text">
+            <p>Choose between 100 Color Palett`s!</p>
+          </div>
+          <div class="infoselects">
+            <!-- color palette example-->
+            <div class="colorpalette">
+              <div class="btncounter">
+                <button class="btn small" id="changepalette">Change palette</button>
+                <div class="icons" id="counter">
+                  <p style="float: left;">1</p>
+                </div>
+              </div>
+              <div class="icons" id="palettecolor">
+                <div class="dothings">
+                </div>
+              </div>
+              <button id="downloadimage" class="btn">Download Image</Button>
+              <p id="balancefalse"></p>
+            </div>
+
+            <div class="canvas-sec">
+              <canvas id="pixelitcanvas"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="links">
+      <div class="social" id="socialm">
+        <a href="https://github.com/en0c-026/pixel4te" rel="nofollow noopener" target="_blank" title="github repository">github</a>
+
+        <a href="https://twitter.com/yudhe2672" rel="nofollow noopener" title="twitter" target="_blank">twitter</a>
+      </div>
+      <div class="ardata" id="ardata">
+        <p>Arweave network status data</p>
+        <p id="network-status"></p>
+      </div>
+    <img src="" id="pixelitimg" alt="">
+
+    <script>
+
+      const arweave = Arweave.init();
+      const status = document.getElementById("network-status");
+      const pdata = document.getElementById("ardata");
+
+      arweave.network.getInfo()
+        .then(result => {
+        status.innerText = `${result.network} | height:${result.height} | peers: ${result.peers} | version: ${result.version}.${result.release}`;})
+        .catch(error => pdata.style.display = 'none');
+
+    </script>
+
+
+    <script type="text/javascript" src='assets/arwnetwork.js'></script>
+    <script src="assets/pixelit.js"></script>
+    <script src="assets/mainmin.js"></script>
+
+    <!-- loader-->
+    <div class="loader">
+      <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    </div>
+
+  </body>
+</html>
