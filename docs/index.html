@@ -125,146 +125,157 @@
     <script  src="assets/mainmin.js"></script>
 
     <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        window.addEventListener('contextmenu', function (e) {
+          e.preventDefault();
+        }, false);
 
-    document.addEventListener("DOMContentLoaded", function () {
-      // Arweave host
-      const arweave = Arweave.init({
-        host: 'arweave.net',// Hostname or IP address for a Arweave host
-        port: 443,          // Port
-        protocol: 'https',  // Network protocol http or https
-        timeout: 20000,     // Network request timeouts in milliseconds
-        logging: false,     // Enable network request logging
-      });
-      const status = document.getElementById("network-status");
-      const pdata = document.getElementById("ardata");
+        const arweave = Arweave.init({
+          host: 'arweave.net',// Hostname or IP address for a Arweave host
+          port: 443,          // Port
+          protocol: 'https',  // Network protocol http or https
+          timeout: 20000,     // Network request timeouts in milliseconds
+          logging: false,     // Enable network request logging
+        });
+        const status = document.getElementById("network-status");
+        const pdata = document.getElementById("ardata");
 
-      arweave.network.getInfo()
-      .then(result => {
-        status.innerText = `${result.network} | height:${result.height} | peers: ${result.peers} | version: ${result.version}.${result.release}`;})
-        .catch(error => pdata.style.display = 'none');
-      //--------------------------------------------------
+        var buttonconnect = document.getElementById('connect')
+        var buttondisconnect = document.getElementById('disconnect')
+        var workingpanel = document.getElementById('tryit')
+        var startbtn = document.getElementById('startbtn')
+        var greeting = document.getElementById('greeting')
+        var linebalance = document.getElementById('balance')
 
-      window.addEventListener("arweaveWalletLoaded", () => {
+        arweave.network.getInfo()
+        .then(result => {
+          status.innerText = `${result.network} | height:${result.height} | peers: ${result.peers} | version: ${result.version}.${result.release}`;})
+          .catch(error => pdata.style.display = 'none');
 
-          var connect = window.arweaveWallet.connect
-          var disconnect = window.arweaveWallet.disconnect
-          var permissions = window.arweaveWallet.getPermissions
-          var address = window.arweaveWallet.getActiveAddress
-          var sign = window.arweaveWallet.sign
-          // List of Permissions
-          var permissionarray = ['ACCESS_ADDRESS', 'ACCESS_ALL_ADDRESSES', 'SIGN_TRANSACTION']
-
-          var buttonconnect = document.getElementById('connect')
-          var buttondisconnect = document.getElementById('disconnect')
-          var workingpanel = document.getElementById('tryit')
-          var startbtn = document.getElementById('startbtn')
-          var greeting = document.getElementById('greeting')
-          var linebalance = document.getElementById('balance')
-
-          var handlePermissions = async () => {
-            var result = await permissions()
-            return result
-          }
-
-
-          var getBalance = async () => {
-              var adress1 = await address()
-              var balance = await arweave.wallets.getBalance(adress1);
+        var getBalance = async (dir) => {
+              var balance = await arweave.wallets.getBalance(dir);
               var balanceInAr = arweave.ar.winstonToAr(balance);
                 return balanceInAr
           }
 
+        //--------------------------------------------------
 
-          buttonconnect.addEventListener('click', async () => {
+        window.addEventListener("arweaveWalletLoaded", () => {
 
-            var result = await handlePermissions()
+            const ARConnect = window.arweaveWallet
+            var connect = ARConnect.connect
+            var disconnect = ARConnect.disconnect
+            var permissions = ARConnect.getPermissions
+            var address = ARConnect.getActiveAddress
+            var sign = ARConnect.sign
+            // List of Permissions
+            var permissionarray = ['ACCESS_ADDRESS', 'ACCESS_ALL_ADDRESSES', 'SIGN_TRANSACTION']
 
-            if (result.length > 0) {
-              var balance = await getBalance()
-              buttonconnect.innerText = 'CONNECTED'
-              buttondisconnect.removeAttribute('style')
-              buttonconnect.disabled = true
-              buttonconnect.style.backgroundColor = 'green'
-
-
-              walletdir = await address()
-              greeting.innerText = `Hi... ${walletdir} .... pixel4te!`
-              if (balance > 0.02) {
-                startbtn.removeAttribute('style')
-                workingpanel.hidden = false
-                linebalance.innerText = `Balance | ${balance}`
-              } else {
-                linebalance.innerText = `Insufficient Balance | ${balance}`
+            var handlePermissions = async () => {
+                var result = await permissions()
+                return result
               }
 
-            }
-            if (result.length == 0) {
+            buttonconnect.addEventListener('click', async () => {
 
-              await connect(permissionarray)
-              var balance = await getBalance()
-              buttonconnect.innerText = 'CONNECTED'
-              buttondisconnect.removeAttribute('style')
-              buttonconnect.disabled = true
-              buttonconnect.style.backgroundColor = 'green'
+              var permsresult = await handlePermissions()
 
-              startbtn.removeAttribute('style')
-
-              var walletdir = await address()
-              greeting.innerText = `Hi... ${walletdir} .... pixel4te!`
-              if (balance > 0.02) {
-                startbtn.removeAttribute('style')
-                workingpanel.hidden = false
-                linebalance.innerText = `Balance | ${balance}`
-              } else {
-                linebalance.innerText = `Insufficient Balance | ${balance}`
+              var reqbal = async () => {
+                if (permsresult.length > 0) {
+                  var walletdir = await address()
+                  var balance = await getBalance(walletdir)
+                  return {balance, walletdir}
+                }
+                if (permsresult.length == 0) {
+                  await connect(permissionarray)
+                  var walletdir = await address()
+                  var balance = await getBalance(walletdir)
+                  return {balance, walletdir}
+                }
               }
 
+              if (permsresult.length > 0) {
+
+                var {balance, walletdir} = await reqbal()
+                buttonconnect.innerText = 'CONNECTED'
+                buttondisconnect.removeAttribute('style')
+                buttonconnect.disabled = true
+                buttonconnect.style.backgroundColor = 'green'
+                greeting.innerText = `Hi... ${walletdir} .... pixel4te!`
+
+                if (balance > 0.02) {
+                  startbtn.removeAttribute('style')
+                  workingpanel.hidden = false
+                  linebalance.innerText = `Balance | ${balance}`
+                }
+                else {
+                  linebalance.innerText = `Insufficient Balance | ${balance}`
+                }
+              }
+
+              if (permsresult.length == 0) {
+
+                var {balance, walletdir} = await reqbal()
+
+                buttonconnect.innerText = 'CONNECTED'
+                buttondisconnect.removeAttribute('style')
+                buttonconnect.disabled = true
+                buttonconnect.style.backgroundColor = 'green'
 
 
-            }
+                greeting.innerText = `Hi... ${walletdir} .... pixel4te!`
+                if (balance > 0.02) {
+                    startbtn.removeAttribute('style')
+                    workingpanel.hidden = false
+                    linebalance.innerText = `Balance | ${balance}`
+                }
+                else {
+                    linebalance.innerText = `Insufficient Balance | ${balance}`
+                }
 
-          });
-          buttondisconnect.addEventListener('click', async () => {
-            disconnect()
-            buttonconnect.innerText = 'CONNECT WALLET'
-            buttonconnect.removeAttribute('style')
-            buttonconnect.disabled = false
-            buttondisconnect.style.display = 'none'
-            workingpanel.hidden = true
+
+
+              }
+
+            });
+
+            buttondisconnect.addEventListener('click', () => {
+              disconnect()
+              buttonconnect.innerText = 'CONNECT WALLET'
+              buttonconnect.removeAttribute('style')
+              buttonconnect.disabled = false
+              buttondisconnect.style.display = 'none'
+              workingpanel.hidden = true
+              startbtn.style.display = 'none'
+              linebalance.innerText = ''
+              greeting.innerText = ''
+
+            });
+
+        });
+
+        window.addEventListener("walletSwitch", async (e) => {
+
+          const walletdir = e.detail.address;
+          var balance = await getBalance(walletdir)
+          linebalance.innerText = ""
+          greeting.innerText = `Hi... ${walletdir} .... pixel4te!`
+
+          if (balance > 0.02) {
+            startbtn.removeAttribute('style')
+            workingpanel.hidden = false
+            linebalance.innerText = `Balance | ${balance}`
+          }
+          else {
+            linebalance.innerText = `Insufficient Balance | ${balance}`
             startbtn.style.display = 'none'
-            linebalance.innerText = ''
-            greeting.innerText = ''
+            workingpanel.hidden = true
+          }
 
-          });
+        });
 
-
-      });
-
-      window.addEventListener("walletSwitch", async (e) => {
-
-        const walletdir = e.detail.address;
-        var balanceW = await arweave.wallets.getBalance(walletdir);
-        var balance = arweave.ar.winstonToAr(balanceW);
-        var linebalance = document.getElementById('balance')
-        var workingpanel = document.getElementById('tryit')
-        linebalance.innerText = ""
-        greeting.innerText = `Hi... ${walletdir} .... pixel4te!`
-
-        if (balance > 0.02) {
-          startbtn.removeAttribute('style')
-          workingpanel.hidden = false
-          linebalance.innerText = `Balance | ${balance}`
-        } else {
-          linebalance.innerText = `Insufficient Balance | ${balance}`
-          startbtn.style.display = 'none'
-          workingpanel.hidden = true
-        }
-
-      });
-
-    })
+      })
     </script>
-
 
 
     <!-- loader-->
