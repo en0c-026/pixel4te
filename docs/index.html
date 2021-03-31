@@ -124,21 +124,12 @@
     <script  src="assets/mainmin.js"></script>
 
     <script>
-    // Arweave host
-    const arweave = Arweave.init();
-    const status = document.getElementById("network-status");
-    const pdata = document.getElementById("ardata");
-
-    arweave.network.getInfo()
-    .then(result => {
-      status.innerText = `${result.network} | height:${result.height} | peers: ${result.peers} | version: ${result.version}.${result.release}`;})
-      .catch(error => pdata.style.display = 'none');
-    //--------------------------------------------------
 
     document.addEventListener("DOMContentLoaded", function () {
 
-      window.addEventListener("arweaveWalletLoaded", () => {
 
+      window.addEventListener("arweaveWalletLoaded", () => {
+          const arweave = Arweave.init();
           var connect = window.arweaveWallet.connect
           var disconnect = window.arweaveWallet.disconnect
           var permissions = window.arweaveWallet.getPermissions
