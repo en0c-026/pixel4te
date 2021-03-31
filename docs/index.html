@@ -118,6 +118,7 @@
         <p>Arweave network status data</p>
         <p id="network-status"></p>
       </div>
+    </section>
     <img src="" id="pixelitimg" alt="">
 
     <script  src="assets/pixelit.js"></script>
@@ -126,36 +127,24 @@
     <script>
 
     document.addEventListener("DOMContentLoaded", function () {
+      // Arweave host
+      const arweave = Arweave.init({
+        host: 'arweave.net',// Hostname or IP address for a Arweave host
+        port: 443,          // Port
+        protocol: 'https',  // Network protocol http or https
+        timeout: 20000,     // Network request timeouts in milliseconds
+        logging: false,     // Enable network request logging
+      });
+      const status = document.getElementById("network-status");
+      const pdata = document.getElementById("ardata");
+
+      arweave.network.getInfo()
+      .then(result => {
+        status.innerText = `${result.network} | height:${result.height} | peers: ${result.peers} | version: ${result.version}.${result.release}`;})
+        .catch(error => pdata.style.display = 'none');
+      //--------------------------------------------------
 
       window.addEventListener("arweaveWalletLoaded", () => {
-        // Arweave host
-
-        const arweave = Arweave.init({
-          host: 'arweave.net',// Hostname or IP address for a Arweave host
-          port: 443,          // Port
-          protocol: 'https',  // Network protocol http or https
-          timeout: 20000,     // Network request timeouts in milliseconds
-          logging: false,     // Enable network request logging
-        });
-        const status = document.getElementById("network-status");
-        const pdata = document.getElementById("ardata");
-        arweave.wallets.getBalance('EOyyw_WZz9mgWY2yNJt5ACAySpSDLMMWTAAVmpLd8wA')
-            .then((balance) => {
-            let winston = balance;
-            let ar = arweave.ar.winstonToAr(balance);
-            console.log(winston);
-            console.log(ar);
-            //0.125213858712
-            })
-            .catch(e => {
-              console.log(e); // "oh, no!"
-              })
-        arweave.network.getInfo()
-          .then(result => {
-          status.innerText = `${result.network} | height:${result.height} | peers: ${result.peers} | version: ${result.version}.${result.release}`;})
-          .catch(error => pdata.style.display = 'none');
-        //--------------------------------------------------
-
 
           var connect = window.arweaveWallet.connect
           var disconnect = window.arweaveWallet.disconnect
@@ -175,7 +164,9 @@
           var handlePermissions = async () => {
             var result = await permissions()
             return result
-            }
+          }
+
+
           var getBalance = async () => {
               var adress1 = await address()
               var balance = await arweave.wallets.getBalance(adress1);
