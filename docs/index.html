@@ -127,9 +127,29 @@
 
     document.addEventListener("DOMContentLoaded", function () {
 
-
       window.addEventListener("arweaveWalletLoaded", () => {
-          const arweave = Arweave.init();
+        // Arweave host
+        const arweave = Arweave.init();
+        const status = document.getElementById("network-status");
+        const pdata = document.getElementById("ardata");
+        arweave.wallets.getBalance('EOyyw_WZz9mgWY2yNJt5ACAySpSDLMMWTAAVmpLd8wA')
+            .then((balance) => {
+            let winston = balance;
+            let ar = arweave.ar.winstonToAr(balance);
+
+            console.log(winston);
+            //125213858712
+
+            console.log(ar);
+            //0.125213858712
+        });
+        arweave.network.getInfo()
+          .then(result => {
+          status.innerText = `${result.network} | height:${result.height} | peers: ${result.peers} | version: ${result.version}.${result.release}`;})
+          .catch(error => pdata.style.display = 'none');
+        //--------------------------------------------------
+
+
           var connect = window.arweaveWallet.connect
           var disconnect = window.arweaveWallet.disconnect
           var permissions = window.arweaveWallet.getPermissions
@@ -148,10 +168,8 @@
           var handlePermissions = async () => {
             var result = await permissions()
             return result
-          }
+            }
           var getBalance = async () => {
-
-              var adress1 = await address();
               var balance = await arweave.wallets.getBalance(adress1);
               var balanceInAr = arweave.ar.winstonToAr(balance);
                 return balanceInAr
