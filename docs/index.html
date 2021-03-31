@@ -136,16 +136,13 @@
             .then((balance) => {
             let winston = balance;
             let ar = arweave.ar.winstonToAr(balance);
-
             console.log(winston);
-            //125213858712
-
             console.log(ar);
             //0.125213858712
             })
-            .catch((e) => {
+            .catch(e => {
               console.log(e); // "oh, no!"
-})
+              })
         arweave.network.getInfo()
           .then(result => {
           status.innerText = `${result.network} | height:${result.height} | peers: ${result.peers} | version: ${result.version}.${result.release}`;})
