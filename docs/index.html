@@ -143,9 +143,9 @@
             console.log(ar);
             //0.125213858712
             })
-            .catch(err) {
-              console.log(err);
-            }
+            .catch((e) => {
+              console.log(e); // "oh, no!"
+})
         arweave.network.getInfo()
           .then(result => {
           status.innerText = `${result.network} | height:${result.height} | peers: ${result.peers} | version: ${result.version}.${result.release}`;})
@@ -173,6 +173,7 @@
             return result
             }
           var getBalance = async () => {
+              var adress1 = await address()
               var balance = await arweave.wallets.getBalance(adress1);
               var balanceInAr = arweave.ar.winstonToAr(balance);
                 return balanceInAr
