@@ -18,8 +18,9 @@
        <button type="button" class="btn" id="connect">CONNECT WALLET</button>
        <button type="button" class="btn" style="display: none;" id="disconnect">DISCONNECT</button>
      </div>
-     <div class="">
-       <p id="greeting" style="text-shadow: 0.19em 0.19em 0.05em black; font-size: 0.6em; background-color: #101820;"></p>
+     <div class="wallet">
+       <p id="greeting" style="text-shadow: 0.19em 0.19em 0.05em black; font-size: 0.75em; background-color: #101820;"></p>
+       <p id="balance" style="text-shadow: 0.19em 0.19em 0.05em black; font-size: 0.75em; background-color: #101820;"></p>
      </div>
      <div class="actions">
        <a href="#work" class="btn" style="display: none; " id="startbtn">START NOW</a>
@@ -123,21 +124,21 @@
     <script  src="assets/mainmin.js"></script>
 
     <script>
+    // Arweave host
+    const arweave = Arweave.init();
+    const status = document.getElementById("network-status");
+    const pdata = document.getElementById("ardata");
+
+    arweave.network.getInfo()
+    .then(result => {
+      status.innerText = `${result.network} | height:${result.height} | peers: ${result.peers} | version: ${result.version}.${result.release}`;})
+      .catch(error => pdata.style.display = 'none');
+    //--------------------------------------------------
 
     document.addEventListener("DOMContentLoaded", function () {
-      // Arweave init
-        const arweave = Arweave.init();
-        const status = document.getElementById("network-status");
-        const pdata = document.getElementById("ardata");
-
-        arweave.network.getInfo()
-        .then(result => {
-          status.innerText = `${result.network} | height:${result.height} | peers: ${result.peers} | version: ${result.version}.${result.release}`;})
-          .catch(error => pdata.style.display = 'none');
-      //
 
       window.addEventListener("arweaveWalletLoaded", () => {
-          // ArConnect Wallet Functions
+
           var connect = window.arweaveWallet.connect
           var disconnect = window.arweaveWallet.disconnect
           var permissions = window.arweaveWallet.getPermissions
@@ -151,6 +152,7 @@
           var workingpanel = document.getElementById('tryit')
           var startbtn = document.getElementById('startbtn')
           var greeting = document.getElementById('greeting')
+          var linebalance = document.getElementById('balance')
 
           var handlePermissions = async () => {
             var result = await permissions()
@@ -158,10 +160,10 @@
           }
           var getBalance = async () => {
 
-            var adress1 = await window.arweaveWallet.getActiveAddress();
-            var balance = await arweave.wallets.getBalance(adress1);
-            var balanceInAr = arweave.ar.winstonToAr(balance);
-            return balanceInAr
+              var adress1 = await address();
+              var balance = await arweave.wallets.getBalance(adress1);
+              var balanceInAr = arweave.ar.winstonToAr(balance);
+                return balanceInAr
           }
 
 
@@ -169,33 +171,48 @@
 
             var result = await handlePermissions()
 
-
             if (result.length > 0) {
               var balance = await getBalance()
               buttonconnect.innerText = 'CONNECTED'
               buttondisconnect.removeAttribute('style')
               buttonconnect.disabled = true
               buttonconnect.style.backgroundColor = 'green'
-              workingpanel.hidden = false
-              startbtn.removeAttribute('style')
-              console.log(balance);
+
 
               walletdir = await address()
               greeting.innerText = `Hi... ${walletdir} .... pixel4te!`
+              if (balance > 0.02) {
+                startbtn.removeAttribute('style')
+                workingpanel.hidden = false
+                linebalance.innerText = `Balance | ${balance}`
+              } else {
+                linebalance.innerText = `Insufficient Balance | ${balance}`
+              }
 
             }
             if (result.length == 0) {
+
               await connect(permissionarray)
+              var balance = await getBalance()
               buttonconnect.innerText = 'CONNECTED'
               buttondisconnect.removeAttribute('style')
               buttonconnect.disabled = true
               buttonconnect.style.backgroundColor = 'green'
-              workingpanel.hidden = false
+
               startbtn.removeAttribute('style')
 
-
-              walletdir = await address()
+              var walletdir = await address()
               greeting.innerText = `Hi... ${walletdir} .... pixel4te!`
+              if (balance > 0.02) {
+                startbtn.removeAttribute('style')
+                workingpanel.hidden = false
+                linebalance.innerText = `Balance | ${balance}`
+              } else {
+                linebalance.innerText = `Insufficient Balance | ${balance}`
+              }
+
+
+
             }
 
           });
@@ -214,23 +231,27 @@
 
 
       });
+
       window.addEventListener("walletSwitch", async (e) => {
+
         const walletdir = e.detail.address;
-        let getBalance = async () => {
-          var adress1 = await window.arweaveWallet.getActiveAddress()
-          var balance = await arweave.wallets.getBalance(adress1)
-          var balanceInAr = arweave.ar.winstonToAr(balance);
-          return balanceInAr
-        }
+        var balanceW = await arweave.wallets.getBalance(walletdir);
+        var balance = arweave.ar.winstonToAr(balanceW);
+        var linebalance = document.getElementById('balance')
+        var workingpanel = document.getElementById('tryit')
+        linebalance.innerText = ""
         greeting.innerText = `Hi... ${walletdir} .... pixel4te!`
-        balanceInAr = await getBalance()
-        if (balanceInAr < 0.02) {
-          document.querySelector('#downloadimage').disabled = true;
-          document.getElementById('balancefalse').innerText = `Insufficient Balance | ${balanceInAr}`
+
+        if (balance > 0.02) {
+          startbtn.removeAttribute('style')
+          workingpanel.hidden = false
+          linebalance.innerText = `Balance | ${balance}`
         } else {
-          document.querySelector('#downloadimage').disabled = false;
-          document.getElementById('balancefalse').innerText = `Balance | ${balanceInAr}`
+          linebalance.innerText = `Insufficient Balance | ${balance}`
+          startbtn.style.display = 'none'
+          workingpanel.hidden = true
         }
+
       });
 
     })

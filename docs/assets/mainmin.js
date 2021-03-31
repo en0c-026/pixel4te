@@ -938,15 +938,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    // if (balanceInAr < 0.02) {
-    //   document.querySelector('#downloadimage').disabled = true;
-    //   document.getElementById('balancefalse').innerText = `Insufficient Balance | ${balanceInAr}`
-    // } else {
-    //   document.querySelector('#downloadimage').disabled = false;
-    //   document.getElementById('balancefalse').innerText = `Balance | ${balanceInAr}`
-    // }
-    //
-
+    document.querySelector('#downloadimage').disabled = false;
 
   };
     //function to apply effects
