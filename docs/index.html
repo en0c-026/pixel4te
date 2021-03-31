@@ -142,7 +142,10 @@
 
             console.log(ar);
             //0.125213858712
-        });
+            })
+            .catch(err) {
+              console.log(err);
+            }
         arweave.network.getInfo()
           .then(result => {
           status.innerText = `${result.network} | height:${result.height} | peers: ${result.peers} | version: ${result.version}.${result.release}`;})
