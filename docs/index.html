@@ -239,8 +239,8 @@
 
             });
 
-            buttondisconnect.addEventListener('click', () => {
-              disconnect()
+            buttondisconnect.addEventListener('click', async () => {
+              await disconnect()
               buttonconnect.innerText = 'CONNECT WALLET'
               buttonconnect.removeAttribute('style')
               buttonconnect.disabled = false
