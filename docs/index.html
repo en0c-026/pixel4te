@@ -138,9 +138,9 @@
       document.addEventListener("DOMContentLoaded", function () {
         //-----------------------------------
         // Disable rigth click
-        // //window.addEventListener('contextmenu', function (e) {
-        //   e.preventDefault();
-        // }, false);
+        window.addEventListener('contextmenu', function (e) {
+          e.preventDefault();
+        }, false);
         //--------------------------------------------------
         // pixel4te app variables
         var px = new Pixelit({from: document.getElementById('pixelitimg'),  });
