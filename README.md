@@ -1,20 +1,38 @@
-pixel4te is an app to generate pixel art images
-
-![a](/docs/assets/7px4color.png)
+# pixel4te is a Dapp on the Arweave blockchain
 
 
-program functions:
+This App need to work ArConnect Chrome Extension, don't you have it? [Get Extension here](https://chrome.google.com/webstore/detail/arconnect/einnioafmpimabjcddiinlhmijaionap?hl=es)
 
-* select the size of the pixel box
-* grayscale
+
+![a](https://github.com/en0c-026/pixel4te/blob/master/pixel4te.png)
+
+
+* Connect wallet with ArConnect
+* Check wallet balance
+* Swich wallet live
+* Sign transacion one click
+* Upload your image to the Arweave blockchain
+* Generale link of the PermaWeb
+* Download image from the Arweave blockchain
+* Get status Arweave Network
+
+
+-----------------------------------------------------------
+Art functions
+
+* Select the size of the pixel box
+* Grayscale
 * 100 pallets colors
-* adjust width and height
-* download png image
+* Pick random pallete
+* Adjust width and height
 
 
-script pallets scaper
 
-you can load new palettes with this script /
+
+---------------------------------
+Script pallets scaper
+
+you can load new palettes with this script / in local version
 
 cd docs/pallets-scraper
 npm install
@@ -22,4 +40,4 @@ node script.js
 
 the input value has to be a number (for example: 4, 8, 16 ..)
 change the page number in the variable "numPag" of docs/pallets-scraper/script.js
-the result is an array with the rgb codes, ready to load in the file cd /docs/assets/mainmin.js in the variable "paletteList"
+the result is an array with the rgb codes, ready to load in scipt element of the html file in the variable "paletteList"
