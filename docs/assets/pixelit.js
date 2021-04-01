@@ -1,5 +1,5 @@
 
-class pixelit {
+class Pixelit {
 
   constructor(config={}) {
     //target for canvas
@@ -48,6 +48,11 @@ class pixelit {
   setFromImgSource(src) {
     this.drawfrom.src = src;
     return this;
+  }
+
+  resetImg() {
+    this.drawfrom.src = '';
+    
   }
   /**
    *
