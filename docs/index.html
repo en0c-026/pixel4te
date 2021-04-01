@@ -5,10 +5,11 @@
 
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+     <link rel="icon" type="image/png" href="assets/favicon.png"/>
      <link rel="stylesheet" href="assets/style.css">
      <script  src="assets/pixelit.js"></script>
      <script src="https://unpkg.com/arweave/bundles/web.bundle.js"></script>
-     <title>pixel4te - pixel art generator</title>
+     <title>Pixel4te App</title>
 
     </head>
   <body>
@@ -95,6 +96,7 @@
             <div class="colorpalette">
               <div class="btncounter">
                 <button class="btn small" id="changepalette">Change palette</button>
+                <button class="btn small" id="randombutton">Random palette</button>
                 <div class="icons" id="counter">
                   <p style="float: left;">1</p>
                 </div>
@@ -1092,6 +1094,7 @@
         var restart = document.getElementById('restart')
         var linkperma = document.getElementById('linkperma')
         var selectors = document.getElementById('selectors')
+        var randombutton = document.querySelector('#randombutton');
 
         //--------------------------------------------------
         // Arweave inicialize
@@ -1144,9 +1147,11 @@
           if (px.drawto.height == 1) {
             changepalbutton.disabled = true;
             buttontransaction.disabled = true;
+            randombutton.disabled = true;
           }
           else {
             changepalbutton.disabled = false;
+            randombutton.disabled = false;
 
           }
 
@@ -1178,7 +1183,7 @@
         palettechek.addEventListener('change', pixelit);
         maxheight.addEventListener('change', pixelit);
         maxwidth.addEventListener('change', pixelit);
-        changepalbutton.addEventListener('click', (e) => {
+        changepalbutton.addEventListener('click', () => {
 
             if (currentPalette < (maxPalette - 1)) {
               currentPalette ++;
@@ -1196,6 +1201,19 @@
 
         });
 
+        randombutton.addEventListener('click', () => {
+
+          currentPalette = Math.floor(Math.random() * 100)
+          counter.innerHTML = '';
+          counvalue.innerText = `${currentPalette + 1}`;
+          counter.appendChild(counvalue);
+          makePaletteGradient();
+          palettechek.checked = true;
+          pixelit();
+
+
+
+        })
 
         pixelit();
         //--------------------------------------------------
@@ -1304,9 +1322,11 @@
               selectors.style.display = 'none'
               pallette.style.display = 'none'
               text.style.display = 'none'
-              counvalue.style.display = 'none'
+              counter.style.display = 'none'
               changepalbutton.disabled = true
+              randombutton.disabled = true
               changepalbutton.style.display = 'none'
+              randombutton.style.display = 'none'
               buttontransaction.disabled = true
               buttontransaction.innerText = "PROCESSING.."
               detailstx.removeAttribute('style')
@@ -1362,10 +1382,9 @@
                 pallette.removeAttribute('style')
                 text.removeAttribute('style')
                 selectors.removeAttribute('style')
-                counvalue.removeAttribute('style')
-                counvalue.style.float = 'left'
+                counter.removeAttribute('style')
                 changepalbutton.removeAttribute('style')
-
+                randombutton.removeAttribute('style')
                 counvalue.innerText = 1
                 buttontransaction.innerText = "Download Image"
                 restart.style.display = 'none'
@@ -1376,6 +1395,7 @@
                 linkperma.style.display = 'none'
                 linkperma.removeAttribute('style');
                 px.resetImg()
+
                 makePaletteGradient();
                 pixelit()
 

@@ -52,7 +52,7 @@ class Pixelit {
 
   resetImg() {
     this.drawfrom.src = '';
-    
+
   }
   /**
    *
@@ -161,7 +161,7 @@ class Pixelit {
 
     this.ctx.drawImage(this.drawfrom, 0, 0, scaledW, scaledH);
 
-    this.ctx.drawImage(this.drawto, 0, 0, scaledW, scaledH, 0, 0, this.drawfrom.width, this.drawfrom.height);
+    this.ctx.drawImage(this.drawto, 0, 0, scaledW, scaledH, 0, 0, this.drawfrom.width + 1, this.drawfrom.height + 1);
 
     //hack images with transparencies on top left corner
     //this.ctx.clearRect(0, 0, scaledW*1.05, scaledH*1.05);
@@ -229,9 +229,9 @@ class Pixelit {
       ratio = this.maxHeight / this.drawto.height;
     }
 
-    canvasCopy.width = this.drawto.width;
-    canvasCopy.height = this.drawto.height;
-    copyContext.drawImage(this.drawto, 0, 0);
+    canvasCopy.width = this.drawto.width + 1;
+    canvasCopy.height = this.drawto.height + 1;
+    copyContext.drawImage(this.drawto, 1, 1);
 
     this.drawto.width = this.drawto.width * ratio;
     this.drawto.height = this.drawto.height * ratio;
@@ -245,8 +245,8 @@ class Pixelit {
    */
   draw() {
     //draw image to canvas
-    this.drawto.width = this.drawfrom.width;
-    this.drawto.height = this.drawfrom.height;
+    this.drawto.width = this.drawfrom.width + 1;
+    this.drawto.height = this.drawfrom.height + 1;
     this.ctx.drawImage(this.drawfrom, 0, 0);
     //resize is always done
     this.resizeImage();
@@ -261,13 +261,13 @@ class Pixelit {
     return dataimage
 
   }
-  saveImage() {
-    const link = document.createElement("a");
-    link.download = "pxArt.png";
-    link.href = this.drawto.toDataURL("image/png").replace("image/png", "image/octet-stream");
-    document.querySelector("body").appendChild(link);
-    link.click();
-    document.querySelector("body").removeChild(link);
-  }
+  // saveImage() {
+  //   const link = document.createElement("a");
+  //   link.download = "pxArt.png";
+  //   link.href = this.drawto.toDataURL("image/png").replace("image/png", "image/octet-stream");
+  //   document.querySelector("body").appendChild(link);
+  //   link.click();
+  //   document.querySelector("body").removeChild(link);
+  // }
   //end class
 }
